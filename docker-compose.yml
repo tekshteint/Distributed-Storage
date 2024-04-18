@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  storage-node:
+    build: StorageNodes/
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "5000"
+    networks:
+      - storage-network
+
+
+  master-node:
+    build: Master/
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "8080:8080"
+    networks:
+      - storage-network
+
+networks:
+  storage-network:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.26.0.0/24"
