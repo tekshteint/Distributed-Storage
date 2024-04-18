@@ -14,7 +14,7 @@ RUN apt-get update && \
 WORKDIR /app
 
 # Copy the Python requirements file and install dependencies
-COPY requirements.txt requirements.txt
+COPY requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 
 # Copy the Flask application files into the container
@@ -24,4 +24,4 @@ COPY server.py /app/server.py
 EXPOSE 8080
 
 # Command to start the Flask server
-CMD ["flask", "run"]
+CMD ["python3", "server.py"]

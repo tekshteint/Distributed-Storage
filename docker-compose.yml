@@ -3,6 +3,8 @@ version: '3'
 services:
   storage-node:
     build: StorageNodes/
+    volumes: 
+      - ./StorageNodes:/app
     deploy:
       replicas: 3
       restart_policy:
@@ -15,6 +17,8 @@ services:
 
   master-node:
     build: Master/
+    volumes: 
+      - ./Master:/app
     deploy:
       replicas: 1
       restart_policy:
