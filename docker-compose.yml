@@ -24,7 +24,7 @@ services:
       restart_policy:
         condition: on-failure
     ports:
-      - "8080:8080"
+      - "9753:8080"
     networks:
       - storage-network
 

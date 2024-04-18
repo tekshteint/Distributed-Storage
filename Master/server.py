@@ -5,6 +5,7 @@ import uuid
 import re
 import subprocess
 import requests
+import socket
 
 # Get all local IPs
 with open("/ips.txt", "w") as outfile:
@@ -18,6 +19,11 @@ with open("/ips.txt", "w") as outfile:
 localIPListPath = "/ips.txt"
 with open (localIPListPath, "r") as file:
     localIPs = [line.strip() for line in file]
+
+subprocess.run(["mkdir", "/app/uploads"])
+    
+sender_ip = socket.gethostbyname(socket.gethostname())
+localIPs.remove(sender_ip) #Removing the master's own IP so we don't send the message to ourselves
 
 app =   Flask(__name__) 
 UPLOAD_FOLDER = Path(__file__).parent.joinpath('uploads')
@@ -56,7 +62,7 @@ def upload():
     for i in range(numNodes):
         with open(app.config['UPLOAD_FOLDER'] / (fileID + "_" + file.filename + f".{i}split"), 'wb') as f:
             f.write(fileSplits[i])
-            files = {'upload_file': open(f,'rb')}
+            files = {'upload_file': open(f.name, 'rb')}
             r = requests.post(f'http://{localIPs[i]}:5000/upload', files=files)
             if r == requests.codes.ok:
                 os.remove(f)
@@ -96,4 +102,4 @@ def download(fileID):
     
 
 if __name__=='__main__': 
-    app.run(debug=True, port=8080)
+    app.run(debug=True, port=8080, host="0.0.0.0")
