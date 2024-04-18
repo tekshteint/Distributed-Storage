@@ -24,6 +24,8 @@ subprocess.run(["mkdir", "/app/uploads"])
     
 sender_ip = socket.gethostbyname(socket.gethostname())
 localIPs.remove(sender_ip) #Removing the master's own IP so we don't send the message to ourselves
+localIPs.pop(0) #Removing the first IP because it's the gateway
+print("LOCAL IPS: ", localIPs)
 
 app =   Flask(__name__) 
 UPLOAD_FOLDER = Path(__file__).parent.joinpath('uploads')
@@ -63,7 +65,7 @@ def upload():
         with open(app.config['UPLOAD_FOLDER'] / (fileID + "_" + file.filename + f".{i}split"), 'wb') as f:
             f.write(fileSplits[i])
             files = {'upload_file': open(f.name, 'rb')}
-            r = requests.post(f'http://{localIPs[i]}:5000/upload', files=files)
+            r = requests.post(f'http://{localIPs[i]}:8080/upload', files=files)
             if r == requests.codes.ok:
                 os.remove(f)
             

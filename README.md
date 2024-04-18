@@ -1,4 +1,6 @@
 # Distributed Storage
+
+Run it with `docker-compose up --build` 
  
 ### Project structure
   * Client can upload files to Master node through PUT request

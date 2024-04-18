@@ -5,6 +5,10 @@ ENV FLASK_APP=storageNode.py
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_RUN_PORT=5000
 
+RUN apt-get update && \
+    apt-get install -y iputils-ping net-tools telnet  && \
+    rm -rf /var/lib/apt/lists/*
+
 # Create and set working directory
 WORKDIR /app
 
@@ -16,7 +20,7 @@ COPY storage.py /app/storage.py
 RUN pip install -r requirements.txt
 
 # Expose the Flask port
-EXPOSE 5000
+EXPOSE 8080
 
 # Command to start the Flask application
 CMD ["python3", "storage.py"]

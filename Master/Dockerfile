@@ -7,7 +7,7 @@ ENV FLASK_RUN_PORT=8080
 
 # Install required packages
 RUN apt-get update && \
-    apt-get install -y nmap && \
+    apt-get install -y nmap net-tools iputils-ping telnet && \
     rm -rf /var/lib/apt/lists/*
 
 # Create and set working directory
