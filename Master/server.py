@@ -64,7 +64,8 @@ def upload():
     for i in range(numNodes):
         with open(app.config['UPLOAD_FOLDER'] / (fileID + "_" + file.filename + f".{i}split"), 'wb') as f:
             f.write(fileSplits[i])
-            files = {'upload_file': open(f.name, 'rb')}
+            files = {'file': open(f.name, 'rb')}
+            print("Sending to: ", localIPs[i])
             r = requests.post(f'http://{localIPs[i]}:8080/upload', files=files)
             if r == requests.codes.ok:
                 os.remove(f)

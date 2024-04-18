@@ -1,9 +1,10 @@
 from flask import Flask, request, jsonify, send_file
 import os
+import http
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = '/app/uploads'  
+UPLOAD_FOLDER = '/uploads'  
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Create the upload folder if it doesn't exist
 
 @app.route('/upload', methods=['POST'])
@@ -12,9 +13,9 @@ def upload():
 
     if file:
         file.save(os.path.join(UPLOAD_FOLDER, file.filename))
-        return 200
+        return "200"
     else:
-        return 400
+        return "400"
 
 
 @app.route('/download/<fileID>', methods=['GET'])
