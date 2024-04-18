@@ -6,7 +6,7 @@ ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_RUN_PORT=5000
 
 # Install required packages
-RUN pip install flask
+RUN pip install -r requirements.txt
 
 # Create and set working directory
 WORKDIR /app
