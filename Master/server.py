@@ -6,7 +6,6 @@ import re
 import subprocess
 import requests
 import socket
-import shutil
 
 # Get all local IPs
 with open("/ips.txt", "w") as outfile:
@@ -71,15 +70,7 @@ def upload():
             if r == requests.codes.ok:
                 os.remove(f)
             
-    for filename in os.listdir(app.config['UPLOAD_FOLDER']):
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-        except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
+    os.remove(FILEPATH)
     
     return jsonify({
         'file_id': fileID
