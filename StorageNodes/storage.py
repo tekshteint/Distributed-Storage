@@ -6,6 +6,7 @@ app = Flask(__name__)
 
 UPLOAD_FOLDER = '/uploads'  
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Create the upload folder if it doesn't exist
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -20,7 +21,6 @@ def upload():
 
 @app.route('/download/<fileID>', methods=['GET'])
 def download(fileID):
-    
     files = os.listdir(app.config['UPLOAD_FOLDER'])
     
     matchingFiles = [filename for filename in files if fileID in filename]
@@ -28,10 +28,9 @@ def download(fileID):
     if len(matchingFiles) == 0:
         return jsonify({'error': 'File not found'})
     
-    partialFile = str(app.config['UPLOAD_FOLDER'] / matchingFiles[0].replace(fileID + "_", ''))
     
                 
-    return  send_file(partialFile, as_attachment=True)
+    return  send_file("/uploads/" + matchingFiles[0], as_attachment=True)
 
 
 
