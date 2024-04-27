@@ -6,6 +6,7 @@ import re
 import subprocess
 import requests
 import socket
+import sys
 
 #Get all local IPs to find storage nodes in docker network
 with open("/ips.txt", "w") as outfile:
@@ -79,11 +80,14 @@ def upload():
     for i in range(numNodes):
         with open(app.config['UPLOAD_FOLDER'] / (fileID + "_" + file.filename + f".{i}split"), 'wb') as f:
             f.write(fileSplits[i])
+            print(f.name, file=sys.stderr)
             files = {'file': open(f.name, 'rb')}
             print("Sending to: ", localIPs[i])
             r = requests.post(f'http://{localIPs[i]}:8080/upload', files=files)
-            if r == requests.codes.ok: #If the file was successfully sent, remove the split file from the master node
-                os.remove(f)
+            #if r == requests.codes.ok: #If the file was successfully sent, remove the split file from the master node
+            if r.status_code == 200:
+                print("in the remove", file=sys.stderr)
+                os.remove(f.name)
             
     os.remove(FILEPATH)
     
@@ -104,16 +108,23 @@ def download(fileID):
         Client's original file
     """
     
+    matchingFiles = []
+    
     #Download the file from the storage nodes
     for i in localIPs:
         r = requests.get(f'http://{i}:8080/download/{fileID}')
+        if r.status_code == 200:
+            filename = r.headers["Content-Disposition"].replace("attachment; filename=", "").replace('"', '') #Get the filename from the response
+            matchingFiles.append(filename) 
+            with open(app.config['UPLOAD_FOLDER'] / filename, 'wb') as f:
+                f.write(r.content) #Write the partial file to the master node
     
     
+    #Find the matching files
     files = os.listdir(app.config['UPLOAD_FOLDER'])
+    matchingFiles = [filename for filename in files if fileID in filename] 
     
-    matchingFiles = [filename for filename in files if fileID in filename] #Find the matching files
-    
-    #If the file is not found, return an error
+    #If there are files, return an error
     if len(matchingFiles) == 0:
         return jsonify({'error': 'File not found'})
     
@@ -125,12 +136,12 @@ def download(fileID):
     with open(wholeFileCleaned, 'wb') as f:
         for i in range(len(matchingFiles)):
             with open(app.config['UPLOAD_FOLDER'] / matchingFiles[i], 'rb') as f_split:
-                f.write(f_split.read())
+                f.write(f_split.read()) #Write the split file to the whole file
+            os.remove(str(app.config['UPLOAD_FOLDER'] / matchingFiles[i])) #Remove the split file
                 
     return  send_file(wholeFileCleaned, as_attachment=True)
         
     
     
-
 if __name__=='__main__': 
     app.run(debug=True, port=8080, host="0.0.0.0")
