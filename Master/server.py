@@ -82,7 +82,6 @@ def upload():
         with open(app.config['UPLOAD_FOLDER'] / (fileID + "_" + file.filename + f".{i}split"), 'wb') as f:
             f.write(fileSplits[i])
             files = {'file': open(f.name, 'rb')}
-            print("Sending to: ", localIPs[i])
             r = requests.post(f'http://{localIPs[i]}:8080/upload', files=files)
             #if r == requests.codes.ok: #If the file was successfully sent, remove the split file from the master node
             if r.status_code == 200:
