@@ -21,4 +21,15 @@ This project is a distributed storage system that allows clients to upload and d
  - Download your file with a GET request to `localhost:9753/download/<fileID>` where the ID is the UUID that was returned when uploaded. Don't lose that key!
  
 
-  
+## Demo
+*Initializing the containers*
+![compose](demos/docker-up.gif)
+
+*Uploading an image file*
+![upload](demos/upload.gif)
+
+*File Splitting among storage nodes 1 and 3*
+![split](demos/fileSplitting.gif)
+
+*Downloading a file*
+![download](demos/download.gif)
