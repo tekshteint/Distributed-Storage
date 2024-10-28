@@ -31,5 +31,5 @@ This project is a distributed storage system that allows clients to upload and d
 *File Splitting among storage nodes 1 and 3*
 ![split](demos/fileSplitting.gif)
 
-*Downloading a file*
+*Downloading a file (I had to compress the gif to fit it into the repo so excuse the discoloration)*
 ![download](demos/download.gif)
